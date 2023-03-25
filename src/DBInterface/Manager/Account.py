@@ -19,15 +19,27 @@ def GetAccountByUsername(username: str) -> tuple[Models.Account | None, str]:
 
 
 def AuthenticateAccount(
-    username: str | Models.Account, 
+    account: str | Models.Account, 
     password: str,
     decrypt: bool = False,
     hold_password: bool = False
 ) -> tuple[bool, str]:
-    success, message = False, ""
+    success, message = False, Messages.Account.AuthenticateAccountUnknownFailure()
     
+    if type(account) is str:
+        account, message = GetAccountByUsername(username=account)
     
+    if account == None:
+        return False, message
     
+    if Secure.Password.PasswordMatches(
+        password, 
+        b64decode(account.salt), 
+        b64decode(account.password)
+    ):
+        success, message = True, Messages.Account.AuthenticateAccountSuccess()
+        # TODO create handling for decrypt & hold_password
+        
     return success, message
 
 

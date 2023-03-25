@@ -46,3 +46,15 @@ def GetAccountRanWithoutError() -> str:
 
 def GetAccountRanWithError() -> str:
     return "Request ran with errors."
+
+
+def AuthenticateAccountUnknownFailure() -> str:
+    return "An unexpected error happened."
+
+
+def AuthenticateAccountPasswordFailure() -> str:
+    return "Incorrect password."
+
+
+def AuthenticateAccountSuccess() -> str:
+    return "Success!"
