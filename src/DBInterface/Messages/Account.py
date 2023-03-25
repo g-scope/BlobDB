@@ -1,5 +1,3 @@
-from .. import Models
-
 def UsernameTooShort(username: str = None) -> str:
     if username != None:
         return f"'{username}' is too short!"

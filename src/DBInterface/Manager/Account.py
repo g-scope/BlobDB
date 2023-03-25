@@ -1,4 +1,5 @@
-from .. import Validator, Messages, Models
+from base64 import b64encode, b64decode
+from .. import Validator, Messages, Secure, Models
 
 def GetAccountByUsername(username: str) -> tuple[Models.Account | None, str]:
     valid, message = Validator.Account.UsernameValid(username=username)
@@ -32,6 +33,7 @@ def CreateAccount(username: str, password: str, email: str = "") -> tuple[Models
     account = Models.Account.create(username=username)
     
     # TODO Secure Module.
+    
     
     account.save()
     
