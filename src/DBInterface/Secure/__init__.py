@@ -1,2 +1,2 @@
-from .. import Secure
+from DBInterface.Secure import Password
 

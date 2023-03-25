@@ -18,3 +18,17 @@ def UsernameValid(username: str, bypass: bool = False) -> tuple[bool, str]:
     return True, Messages.Account.UsernameSuccess()
 
 
+def PasswordValid(password: str, bypass: bool = False) -> tuple[bool, str]:
+    if bypass:
+        return True, Messages.Account.PasswordBypass()
+    
+    if len(password) < 8:
+        return False, Messages.Account.PasswordTooShort()
+    
+    if len(password) > 64:
+        return False, Messages.Account.PasswordTooLong()
+    
+    # TODO minimum security requirements for chars.
+    # upper, symbols.
+    
+    return True, Messages.Account.PasswordSuccess()

@@ -2,7 +2,7 @@ import DBInterface
 
 account, message = DBInterface.Manager.Account.CreateAccount(
     username="testaccount",
-    password="test"
+    password="tesadfasdfst"
 )
 
 print(account, message)

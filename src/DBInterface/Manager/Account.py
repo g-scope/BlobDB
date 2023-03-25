@@ -8,32 +8,45 @@ def GetAccountByUsername(username: str) -> tuple[Models.Account | None, str]:
         return None, message
     
     account = None
+    message = Messages.Account.GetAccountRanWithoutError()
     
     try:
         account = Models.Account.get(Models.Account.username==username)
     except:
-        pass
+        message = Messages.Account.GetAccountRanWithError()
     
-    return account, Messages.Account.GetAccountRanWithoutError()
+    return account, message
 
 
 def CreateAccount(username: str, password: str, email: str = "") -> tuple[Models.Account | None, str]:
-    valid, message = Validator.Account.UsernameValid(username=username)
+    username_valid, username_message = Validator.Account.UsernameValid(username=username)
+    password_valid, password_message = Validator.Account.PasswordValid(password=password)
     
-    if not valid:
-        return None, message
+    if not username_valid:
+        return None, username_message
     
-    account, message = GetAccountByUsername(
+    if not password_valid:
+        return None, password_message
+    
+    account, _ = GetAccountByUsername(
         username=username
     )
     
     if account:
         return None, Messages.Account.CreateAccountFailAlreadyExists()
     
-    account = Models.Account.create(username=username)
+    hashed_password, password_salt = Secure.Password.HashPassword(
+        password=password
+    )
     
-    # TODO Secure Module.
+    password_hashed_b64 = b64encode(hashed_password).decode()
+    password_salt_b64 = b64encode(password_salt).decode()
     
+    account = Models.Account.create(
+        username=username,
+        password=password_hashed_b64,
+        salt=password_salt_b64
+    )
     
     account.save()
     

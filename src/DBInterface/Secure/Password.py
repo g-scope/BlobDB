@@ -5,10 +5,7 @@ from scrypt import scrypt
 def HashPassword(password: str, salt: bytes = get_random_bytes(32)) -> tuple[bytes, bytes]:
     return scrypt.hash(
         password=password,
-        salt=salt,
-        N=1_000_000,
-        r=8,
-        p=1
+        salt=salt
     ), salt
     
     
