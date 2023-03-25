@@ -18,6 +18,19 @@ def GetAccountByUsername(username: str) -> tuple[Models.Account | None, str]:
     return account, message
 
 
+def AuthenticateAccount(
+    username: str | Models.Account, 
+    password: str,
+    decrypt: bool = False,
+    hold_password: bool = False
+) -> tuple[bool, str]:
+    success, message = False, ""
+    
+    
+    
+    return success, message
+
+
 def CreateAccount(username: str, password: str, email: str = "") -> tuple[Models.Account | None, str]:
     username_valid, username_message = Validator.Account.UsernameValid(username=username)
     password_valid, password_message = Validator.Account.PasswordValid(password=password)

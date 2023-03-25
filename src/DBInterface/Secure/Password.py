@@ -9,4 +9,5 @@ def HashPassword(password: str, salt: bytes = get_random_bytes(32)) -> tuple[byt
     ), salt
     
     
-    
+def PasswordMatches(password: str, salt: bytes, hashed_password: bytes) -> bool:
+    return HashPassword(password=password, salt=salt) == hashed_password
