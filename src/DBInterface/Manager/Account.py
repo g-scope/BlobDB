@@ -39,12 +39,12 @@ def CreateAccount(username: str, password: str, email: str = "") -> tuple[Models
         password=password
     )
     
-    password_hashed_b64 = b64encode(hashed_password).decode()
+    hashed_password_b64 = b64encode(hashed_password).decode()
     password_salt_b64 = b64encode(password_salt).decode()
     
     account = Models.Account.create(
         username=username,
-        password=password_hashed_b64,
+        password=hashed_password_b64,
         salt=password_salt_b64
     )
     
