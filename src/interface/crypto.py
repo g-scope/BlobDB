@@ -37,6 +37,5 @@ def compare_password(password: str, salt: bytes, hashed_password: bytes) -> bool
 
 
 def encrypt_data(password: str, salt: bytes, data: dict) -> tuple[bytes, bytes]:
-    hashed_password, _ = hash_password(password, salt)
     cipher = AES.new(derive_account_data_password(password, salt)[0], mode=AES.MODE_EAX)
     return cipher.encrypt(json.dumps(data).encode()), cipher.nonce
