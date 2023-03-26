@@ -2,7 +2,7 @@ from Crypto.Random import get_random_bytes
 from Crypto.Cipher import AES
 from scrypt import scrypt
 
-import json, base64
+import json
 
 def hash_password(password: str, salt: bytes = None) -> tuple[bytes, bytes]:
     """
@@ -32,10 +32,24 @@ def derive_account_data_password(password: str, salt: bytes = None) -> tuple[byt
     return account_password, salt
 
 
-def compare_password(password: str, salt: bytes, hashed_password: bytes) -> bool:
-    return hash_password(password, salt)[0] == hashed_password
+def compare_account_password(password: str, salt: bytes, hashed_password: bytes) -> bool:
+    return derive_account_password(password, salt)[0] == hashed_password
 
 
-def encrypt_data(password: str, salt: bytes, data: dict) -> tuple[bytes, bytes]:
-    cipher = AES.new(derive_account_data_password(password, salt)[0], mode=AES.MODE_EAX)
+def __generic_encrypt_data(password: bytes, data: dict) -> tuple[bytes, bytes]:
+    cipher = AES.new(password, mode=AES.MODE_EAX)
     return cipher.encrypt(json.dumps(data).encode()), cipher.nonce
+
+
+def encrypt_data(data: dict, salt: bytes = None, password: str = None, aes_password: bytes = None) -> tuple[bytes, bytes]:
+    """
+        for a string password it also requires a salt.
+        
+        If aes_password is given, it will ignore salt and password.
+        aes_password has no safety checks and must be 32 chars or less.
+        
+        returns encrypted data, cipher nonce.
+    """
+    if aes_password is not None:
+        return __generic_encrypt_data(aes_password, data)
+    return __generic_encrypt_data(derive_account_data_password(password, salt)[0], data)

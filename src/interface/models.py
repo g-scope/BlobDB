@@ -9,10 +9,10 @@ class BaseModel(Model):
 
 class AccountModel(BaseModel):
     username = CharField(max_length=64)
-    
-    password_salt = TextField(default="")
+
     password = TextField(default="")
-    
+
+    salt = TextField(default="")    
     data = TextField(default="")
     nonce = TextField(default="")
 
