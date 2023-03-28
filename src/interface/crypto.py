@@ -8,6 +8,11 @@ def hash_password(password: str, salt: bytes = None) -> tuple[bytes, bytes]:
     """
         When salt is None it will generate a new salt that is 128 bytes long and return it.
         If a salt value is given it will return the same salt value.
+        
+        scrypt:
+            N=32768
+            r=8
+            p=4
     """
     if salt is None:
         salt = get_random_bytes(128)
@@ -53,3 +58,11 @@ def encrypt_data(data: dict, salt: bytes = None, password: str = None, aes_passw
     if aes_password is not None:
         return __generic_encrypt_data(aes_password, data)
     return __generic_encrypt_data(derive_account_data_password(password, salt)[0], data)
+
+
+def decrypt_data(data: bytes, nonce: bytes, password: bytes) -> dict:
+    """
+        AES password, no other extra handling in this function.
+    """
+    cipher = AES.new(password, AES.MODE_EAX, nonce=nonce)
+    return json.loads(cipher.decrypt(data).decode())

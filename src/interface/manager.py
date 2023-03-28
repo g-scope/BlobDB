@@ -1,6 +1,7 @@
 from interface import models
 from interface import crypto
 from interface import messages
+from interface.accounthandler import AccountHandler
 
 from Crypto.Random import get_random_bytes
 from base64 import b64encode, b64decode
@@ -56,3 +57,10 @@ def create_account(username: str, password: str) -> tuple[models.AccountModel | 
     new_account.save()
     
     return new_account, messages.ACC_CREATION_SUCCESS
+
+
+def create_account_handler(account: models.AccountModel, password: str) -> AccountHandler:
+    return AccountHandler(
+        account,
+        password
+    )
