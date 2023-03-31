@@ -1,50 +1,30 @@
-from randomuser import RandomUser
-from json import dumps
+import blobdb, json
 
-import string, random
+# Create your account, returns a handler with some handy functions.
+account_handler, message = blobdb.create_account(
+    "yourusername",
+    "yourpassword",
+    "email@optional.com"
+)
 
-import blobdb
+# Your data!
+secret_data = {
+    "your": "secret data",
+    "this": "will get broken up into two blobs in the database.",
+    "it": "will not have any reference to this account unless you decrypt the pointer data.",
+    "the": "nonce is also stored in the pointer data."
+}
 
-"""
-def generator() -> str:
-    return "!" + ''.join(random.choices(string.ascii_letters, k=4)) + "!" + ''.join(random.choices(string.ascii_letters, k=4)) + "!"    
+# remember_password stores the password in the class. 
+# I plan to make this more memory safe in the future(XOR shifting).
+account_handler.authorize("yourpassword", remember_password=True)
 
-for _ in range(0, 100):
-    username = generator()
-    password = generator()
-    email = generator()
-    
-    account, message = blobdb.create_account(username, password, email)
-    print(account, message, username)
-    
-    account.save_vault_data(
-        dumps({
-            "secret data": generator(),
-            "oopsy": generator(),
-            "huh": generator()
-        }).encode(),
-        password
-    )
-    
-    with open("log.txt", "a") as file:
-        file.write(f"{username}:{password}\n")
-        file.close()
+# Password arg not required when remember_password used.
+account_handler.save_vault_data(
+    json.dumps(secret_data).encode()
+)
 
-"""
-accounts = []
+# Check to see if the data you set has been retrieved properly.
+data_result = account_handler.load_vault_data()
 
-with open("log.txt", "r") as file:
-    for account in file.read().split("\n"):
-        if len(account) > 3:
-            accounts.append(account.split(":"))
-    file.close()
-
-
-for username, password in accounts:
-    handler = blobdb.get_account_by_username(username)[0]
-    
-    if handler.authorize(password, remember_password=True):
-        print(f"[{username}] was able to be logged in! Lets tryin getting our data!")
-        vault_data = handler.load_vault_data()
-        print(f"[{username}] we retrieved: {vault_data}")
-#"""
+print(data_result)

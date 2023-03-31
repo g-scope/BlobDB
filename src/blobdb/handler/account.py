@@ -91,15 +91,15 @@ class AccountHandler:
             new_vault_password = secure.hash.get_random_bytes(32)
             
             # Loading & Overwritting base info
-            entry_point_data = self.load_pointer_data()
+            pointer_data = self.load_pointer_data()
             
             encrypted_data, nonce = secure.cipher.encrypt_data(
                 data,
                 cipher_password=new_vault_password
             )
             
-            entry_point_data["key"] = b64encode(new_vault_password).decode()
-            entry_point_data["nonce"] = b64encode(nonce).decode()
+            pointer_data["key"] = b64encode(new_vault_password).decode()
+            pointer_data["nonce"] = b64encode(nonce).decode()
             # Finish overwriting base info loading blobs
             
             base64_encrypted_data = b64encode(encrypted_data).decode()
@@ -122,9 +122,9 @@ class AccountHandler:
             blob_a.save()
             blob_b.save()
             
-            entry_point_data["blobs"] = [[blob_a.bid, 0], [blob_b.bid, 1]]
+            pointer_data["blobs"] = [[blob_a.bid, 0], [blob_b.bid, 1]]
             
-            self.save_pointer_data(dumps(entry_point_data).encode())
+            self.save_pointer_data(dumps(pointer_data).encode())
             
             return True
             
